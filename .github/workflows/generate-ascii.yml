@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build_job_1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,3 +15,29 @@ jobs:
         run: |
           chmod +x ./ascii-script.sh
           ./ascii-script.sh
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dragon-artifact
+          path: dragon.txt
+  test_job_2:
+    needs: build_job_1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dragon-artifact
+      - name: Test File Exists
+        run: grep -i "dragon" dragon.txt || echo "Dragon not found in the file."
+  deploy_job_3:
+    needs: [test_job_2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dragon-artifact
+      - name: Read File
+        run: cat dragon.txt
+      - name: Deploy Message
+        run: echo "Deployed Successfully"
