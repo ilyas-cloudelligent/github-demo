@@ -1,0 +1,19 @@
+name: "First Example Workflow"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome Message
+        run: echo "Welcome to the first example workflow!"
+      - name: List files
+        run: ls
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Read Files
+        run: cat README.md || echo "README.md not found"
